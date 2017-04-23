@@ -2,6 +2,9 @@ package cmd
 
 import (
     "github.com/spf13/cobra"
+    "github.com/solidworx/proj/webserver"
+    "os"
+    "strings"
     "github.com/solidworx/proj/host"
 )
 
@@ -22,6 +25,19 @@ var initCmd = &cobra.Command{
     Short: "Initializes a local config",
     Long:  `Initialize a local config`,
     Run: func(cmd *cobra.Command, args []string) {
-        host.AddHostEntry(hostNames, ip, port);
+        webserver.AddConfig(hostNames, ip, port, getProjectName())
+        host.AddHostEntry(hostNames, ip, port)
     },
+}
+
+func getProjectName() (string) {
+    dir, err := os.Getwd()
+
+    if err != nil {
+        panic(err)
+    }
+
+    dirs := strings.Split(dir, string(os.PathSeparator))
+
+    return dirs[len(dirs)-1]
 }
