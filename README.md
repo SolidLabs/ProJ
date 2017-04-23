@@ -35,7 +35,7 @@ E.G
 $ proj init -n my.project.dev
 ```
 
-The will add the entry `127.0.0.1 my.project.dev` to your /etc/hosts file, as well as a webservice configuration that binds to the domain `my.project.dev`
+This will add the entry `127.0.0.1 my.project.dev` to your /etc/hosts file, as well as a webservice configuration that binds to the domain `my.project.dev`
 
 ### Using multiple hostnames
 
