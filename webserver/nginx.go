@@ -7,23 +7,22 @@ import (
 	"fmt"
 	"github.com/solidworx/proj/templates"
 	"strings"
-	"github.com/solidworx/proj/cmd"
+	cfg "github.com/solidworx/proj/config"
 )
 
-func AddConfig(config *cmd.HostConfig, projectDir string) {
-	var config_path interface{} = viper.Get("webservers.nginx.config_path")
-	var appFs afero.Fs = afero.NewOsFs()
+func AddConfig(config *cfg.HostConfig, projectDir string) {
+	var config_path string = viper.GetString("webservers.nginx.config_path")
+
+	fmt.Println("Writing config to" + config_path)
 
 	var fs afero.File
-	fs, _ = appFs.Create(fmt.Sprintf("%s/%s.conf", cast.ToString(config_path), projectDir))
+	fs, _ = cfg.Fs.Create(fmt.Sprintf("%s/%s.conf", cast.ToString(config_path), projectDir))
 
-	c, err := fs.WriteString(fmt.Sprintf(templates.PhpFpmDefault, strings.Join(addPortToHost(config.HostNames, config.Port), " "), projectDir))
+	_, err := fs.WriteString(fmt.Sprintf(templates.PhpFpmDefault, strings.Join(addPortToHost(config.HostNames, config.Port), " "), projectDir))
 
 	if err != nil {
 		fmt.Println(err.Error())
 	}
-
-	fmt.Println(c)
 }
 
 func addPortToHost(hosts []string, port int) []string {

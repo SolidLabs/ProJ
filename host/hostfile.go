@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"github.com/cbednarski/hostess"
 	"os"
-	"github.com/solidworx/proj/cmd"
+	cfg "github.com/solidworx/proj/config"
 )
 
-func AddHostEntry(config *cmd.HostConfig) {
+func AddHostEntry(config *cfg.HostConfig) {
 	hostsfile := loadHostFile()
 
 	for _, host := range config.HostNames {

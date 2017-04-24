@@ -6,15 +6,10 @@ import (
 	"github.com/spf13/cobra"
 	"os"
 	"strings"
+	"github.com/solidworx/proj/config"
 )
 
-type HostConfig struct {
-	HostNames []string
-	Ip        string
-	Port      int
-}
-
-var hostConfig = &HostConfig{}
+var hostConfig = &config.HostConfig{}
 
 func init() {
 
