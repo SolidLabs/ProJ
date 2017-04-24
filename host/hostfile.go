@@ -4,13 +4,14 @@ import (
 	"fmt"
 	"github.com/cbednarski/hostess"
 	"os"
+	"github.com/solidworx/proj/cmd"
 )
 
-func AddHostEntry(hostNames []string, ip string, port int) {
+func AddHostEntry(config *cmd.HostConfig) {
 	hostsfile := loadHostFile()
 
-	for _, host := range hostNames {
-		hostname := hostess.NewHostname(host, ip, true)
+	for _, host := range config.HostNames {
+		hostname := hostess.NewHostname(host, config.Ip, true)
 		replace := hostsfile.Hosts.ContainsDomain(hostname.Domain)
 
 		if replace {

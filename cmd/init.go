@@ -8,16 +8,21 @@ import (
 	"strings"
 )
 
-var hostNames []string
-var ip string
-var port int
+type HostConfig struct {
+	HostNames []string
+	Ip        string
+	Port      int
+}
+
+var hostConfig = &HostConfig{}
 
 func init() {
+
 	RootCmd.AddCommand(initCmd)
 
-	initCmd.Flags().StringArrayVarP(&hostNames, "host", "n", nil, "Project hostnames")
-	initCmd.Flags().IntVarP(&port, "port", "p", 80, "Hostname port")
-	initCmd.Flags().StringVarP(&ip, "ip", "i", "127.0.0.1", "IP address to use for hostname")
+	initCmd.Flags().StringArrayVarP(&hostConfig.HostNames, "host", "n", nil, "Project hostnames")
+	initCmd.Flags().IntVarP(&hostConfig.Port, "port", "p", 80, "Hostname port")
+	initCmd.Flags().StringVarP(&hostConfig.Ip, "ip", "i", "127.0.0.1", "IP address to use for hostname")
 }
 
 var initCmd = &cobra.Command{
@@ -25,8 +30,8 @@ var initCmd = &cobra.Command{
 	Short: "Initializes a local config",
 	Long:  `Initialize a local config`,
 	Run: func(cmd *cobra.Command, args []string) {
-		webserver.AddConfig(hostNames, ip, port, getProjectName())
-		host.AddHostEntry(hostNames, ip, port)
+		webserver.AddConfig(hostConfig, getProjectName())
+		host.AddHostEntry(hostConfig)
 	},
 }
 
