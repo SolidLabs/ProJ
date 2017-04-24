@@ -1,9 +1,9 @@
 package cmd
 
 import (
+    "fmt"
     "github.com/spf13/cobra"
     "github.com/spf13/viper"
-    "fmt"
     "os"
 )
 
@@ -18,8 +18,7 @@ var RootCmd = &cobra.Command{
 func init() {
     cobra.OnInitialize(initConfig)
     RootCmd.PersistentFlags().StringVarP(&cfgFile, "config", "c", "$HOME/.proj.yaml", "Path to config file")
-
-    RootCmd.PersistentFlags().BoolVarP(&Vebose, "verbose", "v", false, "Enable verbose logs");
+    RootCmd.PersistentFlags().BoolVarP(&Vebose, "verbose", "v", false, "Enable verbose logs")
 }
 
 func initConfig() {

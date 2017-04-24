@@ -1,46 +1,46 @@
 package host
 
 import (
-    "github.com/cbednarski/hostess"
-    "fmt"
-    "os"
+	"fmt"
+	"github.com/cbednarski/hostess"
+	"os"
 )
 
 func AddHostEntry(hostNames []string, ip string, port int) {
-    hostsfile := loadHostFile()
+	hostsfile := loadHostFile()
 
-    for _, host := range hostNames {
-        hostname := hostess.NewHostname(host, ip, true);
-        replace := hostsfile.Hosts.ContainsDomain(hostname.Domain)
+	for _, host := range hostNames {
+		hostname := hostess.NewHostname(host, ip, true)
+		replace := hostsfile.Hosts.ContainsDomain(hostname.Domain)
 
-        if replace {
-            fmt.Printf("Updating entry %s\n", hostname.FormatHuman())
-        } else {
-            fmt.Printf("Added %s\n", hostname.FormatHuman())
-        }
+		if replace {
+			fmt.Printf("Updating entry %s\n", hostname.FormatHuman())
+		} else {
+			fmt.Printf("Added %s\n", hostname.FormatHuman())
+		}
 
-        hostsfile.Hosts.Add(hostname)
-    }
+		hostsfile.Hosts.Add(hostname)
+	}
 
-    saveHostFile(hostsfile)
+	saveHostFile(hostsfile)
 }
 
 func loadHostFile() *hostess.Hostfile {
-    hostsfile, errs := hostess.LoadHostfile()
+	hostsfile, errs := hostess.LoadHostfile()
 
-    if len(errs) > 0 {
-        for _, err := range errs {
-            os.Stderr.WriteString(err.Error())
-        }
-        os.Stderr.WriteString("Errors while parsing hostsfile")
-    }
+	if len(errs) > 0 {
+		for _, err := range errs {
+			os.Stderr.WriteString(err.Error())
+		}
+		os.Stderr.WriteString("Errors while parsing hostsfile")
+	}
 
-    return hostsfile
+	return hostsfile
 }
 
 func saveHostFile(hostfile *hostess.Hostfile) {
-    err := hostfile.Save()
-    if err != nil {
-        fmt.Println(hostess.ErrCantWriteHostFile.Error())
-    }
+	err := hostfile.Save()
+	if err != nil {
+		fmt.Println(hostess.ErrCantWriteHostFile.Error())
+	}
 }
