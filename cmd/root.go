@@ -7,7 +7,7 @@ import (
     "os"
 )
 
-var Vebose bool = false
+var verbose bool = false
 var cfgFile string
 
 var RootCmd = &cobra.Command{
@@ -18,7 +18,8 @@ var RootCmd = &cobra.Command{
 func init() {
     cobra.OnInitialize(initConfig)
     RootCmd.PersistentFlags().StringVarP(&cfgFile, "config", "c", "$HOME/.proj.yaml", "Path to config file")
-    RootCmd.PersistentFlags().BoolVarP(&Vebose, "verbose", "v", false, "Enable verbose logs")
+    RootCmd.PersistentFlags().BoolVarP(&verbose, "verbose", "v", false, "Enable verbose logs")
+    viper.BindPFlag("verbose", RootCmd.PersistentFlags().Lookup("verbose"))
 }
 
 func initConfig() {
