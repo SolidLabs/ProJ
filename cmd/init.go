@@ -7,9 +7,12 @@ import (
 	"os"
 	"strings"
 	"github.com/solidworx/proj/config"
+	"sync"
 )
 
 var hostConfig = &config.HostConfig{}
+
+const fnLength = 2
 
 func init() {
 
@@ -25,9 +28,48 @@ var initCmd = &cobra.Command{
 	Short: "Initializes a local config",
 	Long:  `Initialize a local config`,
 	Run: func(cmd *cobra.Command, args []string) {
-		webserver.AddConfig(hostConfig, getProjectName())
-		host.AddHostEntry(hostConfig)
+		flist := [fnLength]func(){}
+
+		flist[0] = func() {
+			webserver.AddConfig(hostConfig, getProjectName())
+		}
+
+		flist[1] = func() {
+			host.AddHostEntry(hostConfig)
+		}
+
+		var wg sync.WaitGroup
+		wg.Add(len(flist))
+		go pool(&wg, len(flist), flist)
+
+		wg.Wait()
 	},
+}
+
+func worker(tasksCh <-chan func(), wg *sync.WaitGroup) {
+	defer wg.Done()
+	for {
+		task, ok := <-tasksCh
+		if !ok {
+			return
+		}
+
+		task()
+	}
+}
+
+func pool(wg *sync.WaitGroup, workers int, tasks [fnLength]func()) {
+	tasksCh := make(chan func())
+
+	for i := 0; i < workers; i++ {
+		go worker(tasksCh, wg)
+	}
+
+	for i := 0; i < len(tasks); i++ {
+		tasksCh <- tasks[i]
+	}
+
+	close(tasksCh)
 }
 
 func getProjectName() string {
